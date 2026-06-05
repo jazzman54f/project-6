@@ -1083,6 +1083,104 @@
       filter: grayscale(0.35) contrast(1.08) invert(0.88) hue-rotate(180deg);
     }
 
+    .admin-section {
+      background: linear-gradient(180deg, #111 0%, #121212 100%);
+    }
+
+    .admin-panel {
+      display: grid;
+      gap: 24px;
+      padding: 30px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(17, 17, 17, 0.92);
+      box-shadow: 0 18px 52px rgba(0, 0, 0, 0.25);
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 24px;
+    }
+
+    .admin-kpis {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .kpi {
+      padding: 18px 16px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      display: grid;
+      gap: 6px;
+    }
+
+    .kpi strong {
+      font-size: 2rem;
+      color: var(--yellow);
+      line-height: 1;
+    }
+
+    .kpi span {
+      color: rgba(255, 255, 255, 0.82);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .admin-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .admin-list {
+      min-height: 240px;
+      overflow: auto;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.18);
+      padding: 12px;
+    }
+
+    .admin-item {
+      width: 100%;
+      text-align: left;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
+      color: #fff;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease;
+    }
+
+    .admin-item:hover,
+    .admin-item:focus-visible {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 193, 7, 0.42);
+    }
+
+    .admin-hidden {
+      display: none !important;
+    }
+
+    .admin-success {
+      color: var(--green);
+    }
+
+    .admin-error {
+      color: #ff6b6b;
+    }
+
     .footer {
       padding: 46px 18px;
       background: #090909;
@@ -1300,6 +1398,7 @@
     }
   </style>
 </head>
+
 <body>
   <header class="site-nav" data-nav>
     <a class="brand" href="#hero" aria-label="Station Gourmande accueil">
@@ -1313,6 +1412,7 @@
       <a href="#gallery">Galerie</a>
       <a href="#story">Notre histoire</a>
       <a href="#contact">Commander</a>
+      <a href="#admin">Admin</a>
     </nav>
   </header>
 
@@ -1599,6 +1699,84 @@ margin-top:0px;
     </section>
   </main>
 
+    <section class="admin-section section-pad" id="admin">
+      <div class="section-shell">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Espace Admin</p>
+          <h2>Modifier le menu et consulter les statistiques.</h2>
+          <p>Ajoutez, modifiez ou supprimez facilement des produits et suivez les ouvertures du site.</p>
+        </div>
+
+        <div class="admin-panel reveal" id="adminPanel">
+          <div class="admin-login" id="adminLogin">
+            <div class="field">
+              <label for="adminPassword">Mot de passe admin</label>
+              <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Entrez le mot de passe">
+            </div>
+            <div class="admin-actions">
+              <button class="btn btn-primary" id="adminLoginButton" type="button">Se connecter</button>
+              <button class="btn btn-ghost" id="demoAdminButton" type="button">Mode local</button>
+            </div>
+            <p class="form-note" id="adminLoginNote"></p>
+          </div>
+
+          <div class="admin-dashboard admin-hidden" id="adminDashboard" aria-live="polite">
+            <div class="admin-grid">
+              <div>
+                <div class="admin-kpis" id="adminKpis"></div>
+                <div class="admin-actions" style="margin-top:16px;">
+                  <button class="btn btn-primary" id="adminReloadDefaults" type="button">Revenir aux valeurs par défaut</button>
+                  <button class="btn btn-ghost" id="adminLogoutButton" type="button">Déconnexion</button>
+                </div>
+              </div>
+
+              <div class="admin-form">
+                <div class="field">
+                  <label for="adminCategory">Catégorie</label>
+                  <select id="adminCategory">
+                    <option value="burgers">Burgers</option>
+                    <option value="tacos">French Tacos</option>
+                    <option value="extras">Suppléments</option>
+                    <option value="drinks">Boissons</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="adminItemName">Nom du produit</label>
+                  <input id="adminItemName" type="text" placeholder="Nom du produit">
+                </div>
+                <div class="field">
+                  <label for="adminItemDesc">Description</label>
+                  <textarea id="adminItemDesc" rows="3" placeholder="Description"></textarea>
+                </div>
+                <div class="field">
+                  <label for="adminItemPrice">Prix (ou normal|mega pour burgers)</label>
+                  <input id="adminItemPrice" type="text" placeholder="Ex : 14DT ou 12DT|15DT">
+                </div>
+                <div class="field">
+                  <label for="adminItemImage">Image (ID Pexels, URL ou image locale)</label>
+                  <input id="adminItemImage" type="text" placeholder="Ex : 1652301988 ou https://...">
+                </div>
+                <div class="field">
+                  <label for="adminItemImageFile">Upload d'image locale</label>
+                  <input id="adminItemImageFile" type="file" accept="image/*">
+                </div>
+                <div class="field">
+                  <label for="adminItemBadges">Badges (séparés par ,)</label>
+                  <input id="adminItemBadges" type="text" placeholder="Ex : ⭐ Coup de cœur, 🧀 Fromage">
+                </div>
+                <div class="admin-actions">
+                  <button class="btn btn-primary" id="adminAddItemButton" type="button">Ajouter / Mettre à jour</button>
+                  <button class="btn btn-ghost" id="adminDeleteItemButton" type="button">Supprimer sélection</button>
+                </div>
+                <p class="form-note" id="adminFormNote"></p>
+              </div>
+            </div>
+            <div class="admin-list" id="adminItemList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   <footer class="footer">
     <div class="footer-inner">
       <a class="brand" href="#hero" aria-label="Station Gourmande accueil">
@@ -1630,166 +1808,171 @@ margin-top:0px;
   </footer>
 
   <script>
-    const image = (id, width = 900) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
+    const STORAGE_MENU_KEY = "stationGourmandeMenu";
+    const STORAGE_STATS_KEY = "stationGourmandeStats";
+    const AUTH_SESSION_KEY = "stationGourmandeAdminAuth";
+    const ADMIN_PASSWORD = "Station@2026";
 
-    const burgers = [
-      {
-        name: "CLASSIC DELIGHT",
-        desc: "pain, viande hachée 100g, laitue, tomate, oignon caramélisés, cheddar, mozzarella et sauce maison : le classique qui ne rate jamais son arrivée.",
-        normal: "11.3DT",
-        mega: "13DT",
-        img: image("1552641"),
-        badges: ["⭐ Coup de cœur", "🧀 Fromage"]
-      },
-      {
-        name: "GOURMET CHIKEN",
-        desc: "Pain,Poulet grillé, laitue,tomate, oignons caramélisés, cheddar, mozzarella et sauce maison .",
-        normal: "14DT",
-        mega: "17.3DT",
-        img: image("36691320"),
-        badges: ["🧀 Fromage"]
-      },
-      {
-        name: "CRISPY",
-        desc: "Pain, poulet pané, laitue, tomate, oignons caramélisés, cheddar, mozzarella et sauce maison : Panure bien sonore, coeur tendre et sauce qui accroche: le burger qui croustille comme une promesse.",
-        normal: "13DT",
-        mega: "18.5DT",
-        img: image("28736410"),
-        badges: ["⭐ Coup de cœur"]
-      },
-      {
-        name: "MUSHROOM MELT",
-        desc: " Pain, viande hachée 150g, laitue, tomate, oignons caramélisés, champignons, cheddar, gruyère, mozzarella et sauce maison: viande saisie pour une profondeur douce et boisée.",
-        normal: "17.3DT",
-        mega: "21DT",
-        img: image("31992843"),
-        badges: ["🧀 Fromage"]
-      },
-      {
-        name: "EGG & BACON",
-        desc: "Pain, viande hachée 150g, laitue, tomate, oignons caramélisés, œuf, bacon, jalepino, cheddar, mozzarella et sauce maison : un réveil gourmand à toute heure.",
-        normal: "15DT",
-        mega: "22DT",
-        img: image("28736402"),
-        badges: ["⭐ Coup de cœur", "🧀 Fromage"]
-      },
-      {
-        name: "BARBE-CUTE",
-        desc: "Pain, viande hachée 150g, laitue, tomate, oignons caramélisés, roquette, bacon, miel fromage de chèvre, cheddar, gruyère, mozzarella et sauce maison : chaleur sucrée-salée pour une bouchée qui sourit.",
-        normal: "20DT",
-        mega: "23.3DT",
-        img: image("22119664"),
-        badges: ["🌶 Épicé", "🧀 Fromage"]
-      },
-      {
-        name: "DOUBLE CHICKEN DELIGHT",
-        desc: "Pain, double poulet pané, laitue, tomate, oignons caramélisés, jalepino, double cheddar, double mozzarella et sauce maison : zéro hésitation.",
-        normal: "20.3DT",
-        mega: "24DT",
-        img: image("33408981"),
-        badges: ["⭐ Coup de cœur"]
-      },
-      {
-        name: "DOUBLE TROUBLE BEEF",
-        desc: "Pain, double viande hachée 100g, laitue, tomate, oignons caramélisés, champignons, double cheddar mozzarella , gruyère, mozzarella et sauce maison: le burger qui assume son caractère.",
-        normal: "22DT",
-        mega: "23.3DT",
-        img: image("12325079"),
-        badges: ["🌶 Épicé", "🧀 Fromage"]
-      },
-      {
-        name: "SICILIEN",
-        desc: "Pain, double viande hachée 150g, laitue, tomate cerise, roquette, basilic, sauce pesto fromage fumé, cheddar, mozzarella cerise et sauce maison .",
-        normal: "23DT",
-        mega: "26.3DT",
-        img: image("18367330"),
-        badges: ["🧀 Fromage"]
-      },
-      {
-        name: "FIG & HONEY DELIGHT",
-        desc: "Pain, viande hachée 150g; laitue, oignons caramélisés, Figue séché, noix, miel,cambert, cheddar, mozzarella et sauce maison : douceur audacieuse sur base bien grillée.",
-        normal: "24DT",
-        mega: "27.3DT",
-        img: image("1363795"),
-        badges: ["⭐ Coup de cœur", "🧀 Fromage"]
-      },
-      {
-        name: "HEART ATTACK",
-        desc: "Pain, triple viande hachée 100g, laitue, tomate, oignons caramélisés, champignons, tripple cheddar, trple mozzarella et sauce maison: le final boss des faims sérieuses.",
-        normal: "30DT",
-        mega: "33.3DT",
-        img: image("24595881"),
-        badges: ["🌶 Épicé", "⭐ Coup de cœur", "🧀 Fromage"]
-      }
-    ];
+    const defaultData = {
+      burgers: [
+        {
+          name: "CLASSIC DELIGHT",
+          desc: "pain, viande hachée 100g, laitue, tomate, oignon caramélisés, cheddar, mozzarella et sauce maison : le classique qui ne rate jamais son arrivée.",
+          normal: "11.3DT",
+          mega: "13DT",
+          img: "1552641",
+          badges: ["⭐ Coup de cœur", "🧀 Fromage"]
+        },
+        {
+          name: "GOURMET CHIKEN",
+          desc: "Pain,Poulet grillé, laitue,tomate, oignons caramélisés, cheddar, mozzarella et sauce maison.",
+          normal: "14DT",
+          mega: "17.3DT",
+          img: "36691320",
+          badges: ["🧀 Fromage"]
+        },
+        {
+          name: "CRISPY",
+          desc: "Pain, poulet pané, laitue, tomate, oignons caramélisés, cheddar, mozzarella et sauce maison : Panure bien sonore, coeur tendre et sauce qui accroche.",
+          normal: "13DT",
+          mega: "18.5DT",
+          img: "28736410",
+          badges: ["⭐ Coup de cœur"]
+        },
+        {
+          name: "MUSHROOM MELT",
+          desc: "Pain, viande hachée 150g, laitue, tomate, oignons caramélisés, champignons, cheddar, gruyère, mozzarella et sauce maison.",
+          normal: "17.3DT",
+          mega: "21DT",
+          img: "31992843",
+          badges: ["🧀 Fromage"]
+        },
+        {
+          name: "EGG & BACON",
+          desc: "Pain, viande hachée 150g, laitue, tomate, oignons caramélisés, œuf, bacon, jalepino, cheddar, mozzarella et sauce maison.",
+          normal: "15DT",
+          mega: "22DT",
+          img: "28736402",
+          badges: ["⭐ Coup de cœur", "🧀 Fromage"]
+        },
+        {
+          name: "BARBE-CUTE",
+          desc: "Pain, viande hachée 150g, laitue, tomate, oignons caramélisés, roquette, bacon, miel fromage de chèvre, cheddar, gruyère, mozzarella et sauce maison.",
+          normal: "20DT",
+          mega: "23.3DT",
+          img: "22119664",
+          badges: ["🌶 Épicé", "🧀 Fromage"]
+        },
+        {
+          name: "DOUBLE CHICKEN DELIGHT",
+          desc: "Pain, double poulet pané, laitue, tomate, oignons caramélisés, jalepino, double cheddar, double mozzarella et sauce maison.",
+          normal: "20.3DT",
+          mega: "24DT",
+          img: "33408981",
+          badges: ["⭐ Coup de cœur"]
+        },
+        {
+          name: "DOUBLE TROUBLE BEEF",
+          desc: "Pain, double viande hachée 100g, laitue, tomate, oignons caramélisés, champignons, double cheddar mozzarella, gruyère, mozzarella et sauce maison.",
+          normal: "22DT",
+          mega: "23.3DT",
+          img: "12325079",
+          badges: ["🌶 Épicé", "🧀 Fromage"]
+        },
+        {
+          name: "SICILIEN",
+          desc: "Pain, double viande hachée 150g, laitue, tomate cerise, roquette, basilic, sauce pesto fromage fumé, cheddar, mozzarella cerise et sauce maison.",
+          normal: "23DT",
+          mega: "26.3DT",
+          img: "18367330",
+          badges: ["🧀 Fromage"]
+        },
+        {
+          name: "FIG & HONEY DELIGHT",
+          desc: "Pain, viande hachée 150g, laitue, oignons caramélisés, figue séchée, noix, miel, camembert, cheddar, mozzarella et sauce maison.",
+          normal: "24DT",
+          mega: "27.3DT",
+          img: "1363795",
+          badges: ["⭐ Coup de cœur", "🧀 Fromage"]
+        },
+        {
+          name: "HEART ATTACK",
+          desc: "Pain, triple viande hachée 100g, laitue, tomate, oignons caramélisés, champignons, triple cheddar, triple mozzarella et sauce maison.",
+          normal: "30DT",
+          mega: "33.3DT",
+          img: "24595881",
+          badges: ["🌶 Épicé", "⭐ Coup de cœur", "🧀 Fromage"]
+        }
+      ],
+      tacos: [
+        {
+          name: "TACOS CLASSIQUE",
+          desc: "Frites dorées, sauce fromagère et viande bien assaisonnée dans une galette pressée minute.",
+          price: "10.9DT",
+          img: "16423835",
+          badges: ["🧀 Fromage"]
+        },
+        {
+          name: "TACOS ESCALOPE",
+          desc: "Escalope fondante, sauce crémeuse et grillage net pour une bouchée chaude et compacte.",
+          price: "13.5DT",
+          img: "16014305",
+          badges: ["⭐ Coup de cœur"]
+        },
+        {
+          name: "TACOS CORDON BLEU",
+          desc: "Cordon bleu, cheddar et frites fondantes: le confort food version Station.",
+          price: "15DT",
+          img: "23996340",
+          badges: ["🧀 Fromage"]
+        },
+        {
+          name: "TACOS MIXTE",
+          desc: "Un mix généreux, sauce maison et fromage coulant pour les appétits qui veulent tout.",
+          price: "16.5DT",
+          img: "4899787",
+          badges: ["🌶 Épicé", "⭐ Coup de cœur"]
+        }
+      ],
+      drinks: [
+        { name: "Soda Classique", desc: "Le frais pétillant qui coupe la richesse du cheddar.", price: "3.5DT", img: "8879626", badges: ["🥤 Frais"] },
+        { name: "Citronnade Maison", desc: "Citron vif, fraîcheur douce et finale légère.", price: "5.5DT", img: "12931444", badges: ["⭐ Coup de cœur"] },
+        { name: "Milkshake Vanille", desc: "Crémeux, froid et rond pour finir sur une note douce.", price: "8DT", img: "3727250", badges: ["🧀 Doux"] }
+      ],
+      extras: [
+        { name: "Œufs", price: "1DT", desc: "" },
+        { name: "Jalépin", price: "1.5DT", desc: "" },
+        { name: "ROQUETTE", price: "2DT", desc: "" },
+        { name: "FRITES", price: "2.5DT", desc: "" },
+        { name: "Champignons", price: "2.5DT", desc: "" },
+        { name: "Potatoes", price: "3.5DT", desc: "" },
+        { name: "Chèvre", price: "3.5DT", desc: "" },
+        { name: "Mozzarella", price: "1DT", desc: "" },
+        { name: "Cheddar", price: "3.5DT", desc: "" },
+        { name: "Bacon", price: "3.5DT", desc: "" },
+        { name: "Pesto", price: "3DT", desc: "" },
+        { name: "Mozzarella Corse", price: "3.5DT", desc: "" },
+        { name: "Gruyère", price: "4DT", desc: "" },
+        { name: "Camembert", price: "4.8DT", desc: "" },
+        { name: "Poulet Grillé", price: "4.5DT", desc: "" },
+        { name: "Fromage Fumé", price: "5.5DT", desc: "" },
+        { name: "Viande Hachée", price: "5DT", desc: "" },
+        { name: "Poulet Pané", price: "5.5DT", desc: "" },
+        { name: "Viande Hachée 160g", price: "7.5DT", desc: "" }
+      ],
+      gallery: [
+        { name: "French Tacos", img: "16423835" },
+        { name: "Burger Barbe-Cute avec Méga Cheddar", img: "22119664" },
+        { name: "Burger Extra Cheddar Cheese", img: "12325079" },
+        { name: "Plated burger spread", img: "28760155" },
+        { name: "Crispy burger & fries", img: "28736410" },
+        { name: "Wrap grillé sauce maison", img: "23996340" }
+      ]
+    };
 
-    const tacos = [
-      {
-        name: "TACOS CLASSIQUE",
-        desc: "Frites dorées, sauce fromagère et viande bien assaisonnée dans une galette pressée minute.",
-        price: "10.9DT",
-        img: image("16423835"),
-        badges: ["🧀 Fromage"]
-      },
-      {
-        name: "TACOS ESCALOPE",
-        desc: "Escalope fondante, sauce crémeuse et grillage net pour une bouchée chaude et compacte.",
-        price: "13.5DT",
-        img: image("16014305"),
-        badges: ["⭐ Coup de cœur"]
-      },
-      {
-        name: "TACOS CORDON BLEU",
-        desc: "Cordon bleu, cheddar et frites fondantes: le confort food version Station.",
-        price: "15DT",
-        img: image("23996340"),
-        badges: ["🧀 Fromage"]
-      },
-      {
-        name: "TACOS MIXTE",
-        desc: "Un mix généreux, sauce maison et fromage coulant pour les appétits qui veulent tout.",
-        price: "16.5DT",
-        img: image("4899787"),
-        badges: ["🌶 Épicé", "⭐ Coup de cœur"]
-      }
-    ];
-
-    const drinks = [
-      { name: "Soda Classique", desc: "Le frais pétillant qui coupe la richesse du cheddar.", price: "3.5DT", img: image("8879626"), badges: ["🥤 Frais"] },
-      { name: "Citronnade Maison", desc: "Citron vif, fraîcheur douce et finale légère.", price: "5.5DT", img: image("12931444"), badges: ["⭐ Coup de cœur"] },
-      { name: "Milkshake Vanille", desc: "Crémeux, froid et rond pour finir sur une note douce.", price: "8DT", img: image("3727250"), badges: ["🧀 Doux"] }
-    ];
-
-    const extras = [
-      ["Œufs", "1DT"],
-      ["Jalépin", "1.5DT"],
-      ["ROQUETTE", "2DT"],
-      ["FRITES", "2.5DT"],
-      ["Champignons", "2.5DT"],
-      ["Potatoes", "3.5DT"],
-      ["Chèvre", "3.5DT"],
-      ["Mozzarella", "1DT"],
-      ["Cheddar", "3.5DT"],
-      ["Bacon", "3.5DT"],
-      ["Pesto", "3DT"],
-      ["Mozzarella Corse", "3.5DT"],
-      ["Gruyère", "4DT"],
-      ["Camembert", "4.8DT"],
-      ["Poulet Grillé", "4.5DT"],
-      ["Fromage Fumé", "5.5DT"],
-      ["Viande Hachée", "5DT"],
-      ["Poulet Pané", "5.5DT"],
-      ["Viande Hachée 160g", "7.5DT"]
-    ];
-
-    const gallery = [
-      ["French Tacos", image("16423835", 1000)],
-      ["Burger Barbe-Cute avec Méga Cheddar", image("22119664", 1000)],
-      ["Burger Extra Cheddar Cheese", image("12325079", 1000)],
-      ["Plated burger spread", image("28760155", 1000)],
-      ["Crispy burger & fries", image("28736410", 1000)],
-      ["Wrap grillé sauce maison", image("23996340", 1000)]
-    ];
+    let menuData = loadMenuData();
+    let statsData = loadStatsData();
+    const adminState = { selectedCategory: "burgers", selectedItemIndex: null };
 
     const grid = document.querySelector("#burgerGrid");
     const tacosGrid = document.querySelector("#tacosGrid");
@@ -1797,15 +1980,114 @@ margin-top:0px;
     const extrasGrid = document.querySelector("#extrasGrid");
     const galleryGrid = document.querySelector("#galleryGrid");
 
+    const adminLogin = document.querySelector("#adminLogin");
+    const adminDashboard = document.querySelector("#adminDashboard");
+    const adminLoginButton = document.querySelector("#adminLoginButton");
+    const demoAdminButton = document.querySelector("#demoAdminButton");
+    const adminLogoutButton = document.querySelector("#adminLogoutButton");
+    const adminReloadDefaults = document.querySelector("#adminReloadDefaults");
+    const adminCategory = document.querySelector("#adminCategory");
+    const adminItemName = document.querySelector("#adminItemName");
+    const adminItemDesc = document.querySelector("#adminItemDesc");
+    const adminItemPrice = document.querySelector("#adminItemPrice");
+    const adminItemImage = document.querySelector("#adminItemImage");
+    const adminItemImageFile = document.querySelector("#adminItemImageFile");
+    const adminItemBadges = document.querySelector("#adminItemBadges");
+    const adminAddItemButton = document.querySelector("#adminAddItemButton");
+    const adminDeleteItemButton = document.querySelector("#adminDeleteItemButton");
+    const adminItemList = document.querySelector("#adminItemList");
+    const adminKpis = document.querySelector("#adminKpis");
+    const adminLoginNote = document.querySelector("#adminLoginNote");
+    const adminFormNote = document.querySelector("#adminFormNote");
+
+    const nav = document.querySelector("[data-nav]");
+    const navToggle = document.querySelector(".nav-toggle");
+    const navLinks = document.querySelector(".nav-links");
+    const heroBg = document.querySelector(".hero-bg");
+    const ingredients = [...document.querySelectorAll(".ingredient")];
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.16, rootMargin: "0px 0px -6% 0px" });
+
+    function image(src, width = 900) {
+      if (!src) return `https://picsum.photos/seed/placeholder/${width}/${Math.round(width * 0.66)}`;
+      if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("data:")) return src;
+      return `https://images.pexels.com/photos/${src}/pexels-photo-${src}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
+    }
+
+    function cloneData(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function loadMenuData() {
+      const saved = window.localStorage.getItem(STORAGE_MENU_KEY);
+      if (!saved) return cloneData(defaultData);
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          burgers: parsed.burgers || cloneData(defaultData.burgers),
+          tacos: parsed.tacos || cloneData(defaultData.tacos),
+          drinks: parsed.drinks || cloneData(defaultData.drinks),
+          extras: parsed.extras || cloneData(defaultData.extras),
+          gallery: parsed.gallery || cloneData(defaultData.gallery)
+        };
+      } catch {
+        return cloneData(defaultData);
+      }
+    }
+
+    function loadStatsData() {
+      const saved = window.localStorage.getItem(STORAGE_STATS_KEY);
+      if (!saved) {
+        return { pageViews: 0, itemUpdates: 0, lastUpdate: "Jamais" };
+      }
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return { pageViews: 0, itemUpdates: 0, lastUpdate: "Jamais" };
+      }
+    }
+
+    function saveMenuData() {
+      window.localStorage.setItem(STORAGE_MENU_KEY, JSON.stringify(menuData));
+      renderAdminStats();
+    }
+
+    function saveStatsData() {
+      window.localStorage.setItem(STORAGE_STATS_KEY, JSON.stringify(statsData));
+      renderAdminStats();
+    }
+
+    function updateAdminStats(updateText = "") {
+      statsData.itemUpdates += 1;
+      statsData.lastUpdate = new Date().toLocaleString("fr-FR");
+      saveMenuData();
+      saveStatsData();
+      adminFormNote.textContent = updateText;
+      adminFormNote.className = updateText ? "form-note admin-success" : "form-note";
+    }
+
+    function incrementPageViews() {
+      statsData.pageViews += 1;
+      saveStatsData();
+    }
+
     function badgeMarkup(badges) {
-      return `<div class="badges">${badges.map((badge) => `<span class="badge">${badge}</span>`).join("")}</div>`;
+      return Array.isArray(badges) && badges.length > 0
+        ? `<div class="badges">${badges.map((badge) => `<span class="badge">${badge}</span>`).join("")}</div>`
+        : "";
     }
 
     function burgerCard(item) {
       return `
         <article class="menu-card reveal-card" data-normal="${item.normal}" data-mega="${item.mega}">
           <div class="menu-photo">
-            <img src="${item.img}" alt="${item.name}" loading="lazy">
+            <img src="${image(item.img)}" alt="${item.name}" loading="lazy">
             <span class="price-pill">${item.normal}</span>
           </div>
           <div class="menu-card-body">
@@ -1825,34 +2107,269 @@ margin-top:0px;
       return `
         <article class="menu-card reveal-card">
           <div class="menu-photo">
-            <img src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/${encodeURIComponent(item.name)}/600/400'">
+            <img src="${image(item.img)}" alt="${item.name}" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/${encodeURIComponent(item.name)}/600/400'">
             <span class="price-pill">${item.price}</span>
           </div>
           <div class="menu-card-body">
             <h4>${item.name}</h4>
-            <p>${item.desc}</p>
+            <p>${item.desc || ""}</p>
             ${badgeMarkup(item.badges)}
           </div>
         </article>
       `;
     }
 
-    grid.innerHTML = burgers.map(burgerCard).join("");
-    tacosGrid.innerHTML = tacos.map(simpleCard).join("");
-    drinksGrid.innerHTML = drinks.map(simpleCard).join("");
-    extrasGrid.innerHTML = extras.map(([name, price]) => `<div class="extra-item reveal-card"><strong>${name}</strong><span>${price}</span></div>`).join("");
-    galleryGrid.innerHTML = gallery.map(([name, src]) => `
-      <a class="gallery-card reveal-card" href="https://www.instagram.com/stationgourmandesfax/" target="_blank" rel="noopener">
-        <img src="${src}" alt="${name}" loading="lazy">
-        <span class="gallery-overlay"><strong>${name}</strong></span>
-      </a>
-    `).join("");
+    function extraItemMarkup(item) {
+      return `<div class="extra-item reveal-card"><strong>${item.name}</strong><span>${item.price}</span></div>`;
+    }
 
-    const nav = document.querySelector("[data-nav]");
-    const navToggle = document.querySelector(".nav-toggle");
-    const navLinks = document.querySelector(".nav-links");
-    const heroBg = document.querySelector(".hero-bg");
-    const ingredients = [...document.querySelectorAll(".ingredient")];
+    function galleryCard(item) {
+      return `
+        <a class="gallery-card reveal-card" href="https://www.instagram.com/stationgourmandesfax/" target="_blank" rel="noopener">
+          <img src="${image(item.img, 1000)}" alt="${item.name}" loading="lazy">
+          <span class="gallery-overlay"><strong>${item.name}</strong></span>
+        </a>
+      `;
+    }
+
+    function bindMenuInteractions() {
+      document.querySelectorAll(".size-toggle").forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+          const card = toggle.closest(".menu-card");
+          const checked = toggle.getAttribute("aria-checked") === "true";
+          toggle.setAttribute("aria-checked", String(!checked));
+          card.querySelector(".price-pill").textContent = checked ? card.dataset.normal : card.dataset.mega;
+        });
+      });
+
+      document.querySelectorAll(".reveal-card").forEach((el) => revealObserver.observe(el));
+    }
+
+    function renderMenu() {
+      grid.innerHTML = menuData.burgers.map(burgerCard).join("");
+      tacosGrid.innerHTML = menuData.tacos.map(simpleCard).join("");
+      drinksGrid.innerHTML = menuData.drinks.map(simpleCard).join("");
+      extrasGrid.innerHTML = menuData.extras.map(extraItemMarkup).join("");
+      galleryGrid.innerHTML = menuData.gallery.map(galleryCard).join("");
+      bindMenuInteractions();
+    }
+
+    function renderAdminStats() {
+      const totalItems = menuData.burgers.length + menuData.tacos.length + menuData.drinks.length + menuData.extras.length;
+      adminKpis.innerHTML = `
+        <div class="kpi"><strong>${statsData.pageViews}</strong><span>Ouvertures du site</span></div>
+        <div class="kpi"><strong>${totalItems}</strong><span>Produits total</span></div>
+        <div class="kpi"><strong>${statsData.itemUpdates}</strong><span>Mises à jour</span></div>
+        <div class="kpi"><strong>${statsData.lastUpdate}</strong><span>Dernière modification</span></div>
+      `;
+    }
+
+    function setAdminMessage(message, type = "success") {
+      adminFormNote.textContent = message;
+      adminFormNote.className = `form-note ${type === "error" ? "admin-error" : "admin-success"}`;
+    }
+
+    let adminItemImageFileData = "";
+
+    function resetAdminForm() {
+      adminState.selectedItemIndex = null;
+      adminItemName.value = "";
+      adminItemDesc.value = "";
+      adminItemPrice.value = "";
+      adminItemImage.value = "";
+      adminItemImageFile.value = "";
+      adminItemImageFileData = "";
+      adminItemBadges.value = "";
+      adminFormNote.textContent = "";
+    }
+
+    function getCurrentCategoryItems() {
+      return menuData[adminCategory.value] || [];
+    }
+
+    function renderAdminList() {
+      const items = getCurrentCategoryItems();
+      if (!items.length) {
+        adminItemList.innerHTML = `<p>Aucun produit dans cette catégorie. Ajoutez-en un.</p>`;
+        return;
+      }
+
+      adminItemList.innerHTML = items.map((item, index) => `
+        <button class="admin-item" type="button" data-index="${index}">
+          <strong>${item.name || item.price || `Produit ${index + 1}`}</strong>
+          <span style="display:block;color:rgba(255,255,255,0.7);font-size:0.9rem;margin-top:4px;">${item.price || item.normal || item.mega || ""}</span>
+        </button>
+      `).join("");
+
+      adminItemList.querySelectorAll(".admin-item").forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.index);
+          adminState.selectedItemIndex = index;
+          loadAdminItem(index);
+        });
+      });
+    }
+
+    function loadAdminItem(index) {
+      const items = getCurrentCategoryItems();
+      const item = items[index];
+      if (!item) return;
+
+      adminState.selectedItemIndex = index;
+      adminItemName.value = item.name || "";
+      adminItemDesc.value = item.desc || "";
+      adminItemPrice.value = adminCategory.value === "burgers" ? `${item.normal}|${item.mega}` : item.price || "";
+      adminItemImage.value = item.img && !item.img.startsWith("data:") ? item.img : "";
+      adminItemImageFile.value = "";
+      adminItemImageFileData = item.img && item.img.startsWith("data:") ? item.img : "";
+      adminItemBadges.value = (item.badges || []).join(", ");
+      setAdminMessage(`Édition du produit « ${item.name || item.price} »`, "success");
+    }
+
+    function parseBadges(value) {
+      return value
+        .split(",")
+        .map((badge) => badge.trim())
+        .filter(Boolean);
+    }
+
+    function validatePriceInput(value) {
+      return value.trim().length > 0;
+    }
+
+    function saveItem() {
+      const category = adminCategory.value;
+      const name = adminItemName.value.trim();
+      const desc = adminItemDesc.value.trim();
+      const rawPrice = adminItemPrice.value.trim();
+      const imgInput = adminItemImage.value.trim();
+      const img = adminItemImageFileData || imgInput;
+      const badges = parseBadges(adminItemBadges.value);
+
+      if (!name || !validatePriceInput(rawPrice)) {
+        setAdminMessage("Le nom et le prix sont obligatoires.", "error");
+        return;
+      }
+
+      const item = {
+        name,
+        desc,
+        img,
+        badges
+      };
+
+      if (category === "burgers") {
+        const parts = rawPrice.split("|").map((part) => part.trim());
+        item.normal = parts[0] || rawPrice;
+        item.mega = parts[1] || parts[0] || "";
+      } else {
+        item.price = rawPrice;
+      }
+
+      const items = getCurrentCategoryItems();
+      if (adminState.selectedItemIndex !== null && items[adminState.selectedItemIndex]) {
+        items[adminState.selectedItemIndex] = item;
+        setAdminMessage("Produit mis à jour avec succès.", "success");
+      } else {
+        items.push(item);
+        setAdminMessage("Produit ajouté avec succès.", "success");
+      }
+
+      updateAdminStats("Les changements ont été enregistrés.");
+      saveMenuData();
+      renderMenu();
+      renderAdminList();
+      resetAdminForm();
+    }
+
+    function deleteItem() {
+      const index = adminState.selectedItemIndex;
+      const items = getCurrentCategoryItems();
+      if (index === null || !items[index]) {
+        setAdminMessage("Sélectionnez d'abord un produit à supprimer.", "error");
+        return;
+      }
+
+      items.splice(index, 1);
+      updateAdminStats("Produit supprimé avec succès.");
+      saveMenuData();
+      renderMenu();
+      renderAdminList();
+      resetAdminForm();
+    }
+
+    function applyAdminAuth(isAuthenticated) {
+      if (isAuthenticated) {
+        adminLogin.classList.add("admin-hidden");
+        adminDashboard.classList.remove("admin-hidden");
+        renderAdminStats();
+        renderAdminList();
+      } else {
+        adminDashboard.classList.add("admin-hidden");
+        adminLogin.classList.remove("admin-hidden");
+      }
+    }
+
+    adminItemImageFile.addEventListener("change", () => {
+      const file = adminItemImageFile.files && adminItemImageFile.files[0];
+      if (!file) {
+        adminItemImageFileData = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        adminItemImageFileData = reader.result || "";
+        adminFormNote.textContent = "Image locale chargée. Cliquez Ajouter pour enregistrer.";
+        adminFormNote.className = "form-note admin-success";
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function loginAdmin() {
+      const passwordInput = document.querySelector("#adminPassword");
+      if (passwordInput.value === ADMIN_PASSWORD) {
+        window.sessionStorage.setItem(AUTH_SESSION_KEY, "true");
+        applyAdminAuth(true);
+        adminLoginNote.textContent = "Connecté en mode administrateur.";
+        adminLoginNote.className = "form-note admin-success";
+        resetAdminForm();
+      } else {
+        adminLoginNote.textContent = "Mot de passe incorrect.";
+        adminLoginNote.className = "form-note admin-error";
+      }
+    }
+
+    function logoutAdmin() {
+      window.sessionStorage.removeItem(AUTH_SESSION_KEY);
+      applyAdminAuth(false);
+      adminLoginNote.textContent = "Déconnecté.";
+      adminLoginNote.className = "form-note";
+      resetAdminForm();
+    }
+
+    function loadDefaultData() {
+      menuData = cloneData(defaultData);
+      statsData = { pageViews: statsData.pageViews, itemUpdates: 0, lastUpdate: "Jamais" };
+      saveMenuData();
+      saveStatsData();
+      renderMenu();
+      renderAdminList();
+      setAdminMessage("Valeurs par défaut restaurées.", "success");
+    }
+
+    function initializeAdmin() {
+      const isAuthenticated = window.sessionStorage.getItem(AUTH_SESSION_KEY) === "true";
+      applyAdminAuth(isAuthenticated);
+      renderAdminStats();
+      renderAdminList();
+    }
+
+    function renderAdminListOnCategoryChange() {
+      adminState.selectedItemIndex = null;
+      resetAdminForm();
+      renderAdminList();
+    }
 
     navToggle.addEventListener("click", () => {
       const isOpen = navLinks.classList.toggle("is-open");
@@ -1863,6 +2380,19 @@ margin-top:0px;
       navLinks.classList.remove("is-open");
       navToggle.setAttribute("aria-expanded", "false");
     });
+
+    adminLoginButton.addEventListener("click", loginAdmin);
+    demoAdminButton.addEventListener("click", () => {
+      window.sessionStorage.setItem(AUTH_SESSION_KEY, "true");
+      applyAdminAuth(true);
+      adminLoginNote.textContent = "Mode local activé.";
+      adminLoginNote.className = "form-note admin-success";
+    });
+    adminLogoutButton.addEventListener("click", logoutAdmin);
+    adminReloadDefaults.addEventListener("click", loadDefaultData);
+    adminCategory.addEventListener("change", renderAdminListOnCategoryChange);
+    adminAddItemButton.addEventListener("click", saveItem);
+    adminDeleteItemButton.addEventListener("click", deleteItem);
 
     function onScroll() {
       const y = window.scrollY;
@@ -1881,26 +2411,6 @@ margin-top:0px;
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
 
-    document.querySelectorAll(".size-toggle").forEach((toggle) => {
-      toggle.addEventListener("click", () => {
-        const card = toggle.closest(".menu-card");
-        const checked = toggle.getAttribute("aria-checked") === "true";
-        toggle.setAttribute("aria-checked", String(!checked));
-        card.querySelector(".price-pill").textContent = checked ? card.dataset.normal : card.dataset.mega;
-      });
-    });
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.16, rootMargin: "0px 0px -6% 0px" });
-
-    document.querySelectorAll(".reveal-card, .reveal").forEach((el) => observer.observe(el));
-
     const tabs = [...document.querySelectorAll(".menu-tab")];
     const sections = tabs.map((tab) => document.querySelector(tab.getAttribute("href")));
     const tabObserver = new IntersectionObserver((entries) => {
@@ -1913,7 +2423,7 @@ margin-top:0px;
     sections.forEach((section) => tabObserver.observe(section));
 
     let countersDone = false;
-    const stats = document.querySelector("#stats");
+    const statsSection = document.querySelector("#stats");
     const counterObserver = new IntersectionObserver((entries) => {
       if (countersDone || !entries.some((entry) => entry.isIntersecting)) return;
       countersDone = true;
@@ -1930,7 +2440,9 @@ margin-top:0px;
         requestAnimationFrame(tick);
       });
     }, { threshold: 0.3 });
-    counterObserver.observe(stats);
+    if (statsSection) {
+      counterObserver.observe(statsSection);
+    }
 
     const form = document.querySelector("#reserveForm");
     const formNote = document.querySelector("#formNote");
@@ -1945,6 +2457,9 @@ margin-top:0px;
       if (window.lucide) {
         window.lucide.createIcons();
       }
+      incrementPageViews();
+      renderMenu();
+      initializeAdmin();
     });
   </script>
 </body>
